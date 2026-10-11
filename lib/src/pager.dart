@@ -27,7 +27,8 @@ abstract class BasePager<T, K, P extends BasePager<T, K, P>> {
 typedef PageKey = ({int index, int size});
 
 /// 传统基于页码和页大小（[index] & [size]）的分页器抽象基类
-abstract class TPager<T, P extends TPager<T, P>> extends BasePager<T, PageKey, P> {
+abstract class TPager<T, P extends TPager<T, P>>
+    extends BasePager<T, PageKey, P> {
   @override
   final List<T> data;
 
@@ -86,11 +87,15 @@ class Pager<T> extends TPager<T, Pager<T>> {
 
   @override
   Pager<T> generateNextPage(
-      List<T> nextData, {
-        int? size,
-        int? totalPage,
-      }) =>
-      Pager(data: nextData, index: index + 1, size: size ?? this.size, totalPage: totalPage ?? this.totalPage);
+    List<T> nextData, {
+    int? size,
+    int? totalPage,
+  }) =>
+      Pager(
+          data: nextData,
+          index: index + 1,
+          size: size ?? this.size,
+          totalPage: totalPage ?? this.totalPage);
 }
 
 /// 基于总条数（[totalCount]）的分页器实现
@@ -111,7 +116,8 @@ class Page<T> extends TPager<T, Page<T>> {
     required super.data,
     required super.size,
     required this.totalCount,
-  })  : assert(totalCount >= 0, 'totalCount must be greater than or equal to 0'),
+  })  : assert(
+            totalCount >= 0, 'totalCount must be greater than or equal to 0'),
         super(index: 1);
 
   /// 通过 [PageKey] 创建基于总条数的分页器
@@ -126,11 +132,15 @@ class Page<T> extends TPager<T, Page<T>> {
 
   @override
   Page<T> generateNextPage(
-      List<T> nextData, {
-        int? size,
-        int? totalCount,
-      }) =>
-      Page(data: nextData, index: index + 1, size: size ?? this.size, totalCount: totalCount ?? this.totalCount);
+    List<T> nextData, {
+    int? size,
+    int? totalCount,
+  }) =>
+      Page(
+          data: nextData,
+          index: index + 1,
+          size: size ?? this.size,
+          totalCount: totalCount ?? this.totalCount);
 }
 
 /// 基于自定义键/游标（[Key]）的分页器实现
@@ -163,7 +173,12 @@ class KPage<T, Key> extends BasePager<T, Key, KPage<T, Key>> {
   }) : hasPrevious = false;
 
   @override
-  KPage<T, Key> generateNextPage(List<T> nextData, {bool hasNext = true, Key? nextPageKey}) {
-    return KPage(data: nextData, hasPrevious: true, hasNext: hasNext, nextPageKey: nextPageKey as Key);
+  KPage<T, Key> generateNextPage(List<T> nextData,
+      {bool hasNext = true, Key? nextPageKey}) {
+    return KPage(
+        data: nextData,
+        hasPrevious: true,
+        hasNext: hasNext,
+        nextPageKey: nextPageKey as Key);
   }
 }
