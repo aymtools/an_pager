@@ -2,8 +2,9 @@ import 'package:an_pager/an_pager.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Pager (基于总页数 totalPage 分页)', () {
-    test('Pager.first 初始化首页', () {
+  group('Pager (Total-page based pagination)', () {
+    test('Pager.first initialization', () {
+      // 初始化 Pager 首页
       final pager = Pager<String>.first(
         data: ['a', 'b'],
         size: 2,
@@ -19,7 +20,8 @@ void main() {
       expect(pager.nextPageKey, equals((index: 2, size: 2)));
     });
 
-    test('Pager.fromPageKey 初始化', () {
+    test('Pager.fromPageKey initialization', () {
+      // 通过 PageKey 构造函数初始化
       final PageKey key = (index: 2, size: 5);
       final pager = Pager<int>.fromPageKey(
         data: [1, 2, 3, 4, 5],
@@ -33,7 +35,8 @@ void main() {
       expect(pager.hasNext, isFalse);
     });
 
-    test('generateNextPage 生成下一页', () {
+    test('generateNextPage creates next Pager', () {
+      // 验证 generateNextPage 生成下一页数据和索引
       final pager = Pager<int>.first(
         data: [1, 2],
         size: 2,
@@ -50,7 +53,8 @@ void main() {
       expect(nextPage.hasNext, isTrue);
     });
 
-    test('hasData 判断数据非空状态', () {
+    test('hasData checks whether data list is not empty', () {
+      // 检查 hasData 状态判断
       final emptyPager = Pager<int>.first(data: [], size: 10, totalPage: 0);
       expect(emptyPager.hasData, isFalse);
 
@@ -58,7 +62,9 @@ void main() {
       expect(nonEmptyPager.hasData, isTrue);
     });
 
-    test('参数断言抛出 AssertionError', () {
+    test('assertion throws AssertionError on invalid constructor parameters',
+        () {
+      // 验证参数校验和断言触发
       expect(
         () => Pager<int>(data: [], index: 0, size: 10, totalPage: 1),
         throwsA(isA<AssertionError>()),
@@ -74,8 +80,9 @@ void main() {
     });
   });
 
-  group('Page (基于总条数 totalCount 分页)', () {
-    test('Page.first 及 hasNext 计算', () {
+  group('Page (Total-count based pagination)', () {
+    test('Page.first and hasNext calculation', () {
+      // 验证 Page.first 及 hasNext 逻辑计算
       final page = Page<String>.first(
         data: ['item1', 'item2'],
         size: 2,
@@ -89,7 +96,8 @@ void main() {
       expect(page.hasNext, isTrue); // 1 * 2 < 5
     });
 
-    test('最后一页 hasNext 计算', () {
+    test('last page hasNext calculation', () {
+      // 验证到达最后一页时 hasNext 为 false
       final page = Page<String>(
         data: ['item5'],
         index: 3,
@@ -101,7 +109,8 @@ void main() {
       expect(page.hasNext, isFalse); // 3 * 2 >= 5
     });
 
-    test('Page.fromPageKey 及 generateNextPage', () {
+    test('Page.fromPageKey and generateNextPage', () {
+      // 验证 Page.fromPageKey 及 generateNextPage
       final PageKey key = (index: 1, size: 10);
       final page = Page<int>.fromPageKey(
         data: List.generate(10, (i) => i),
@@ -121,8 +130,9 @@ void main() {
     });
   });
 
-  group('KPage (基于自定义 Key/游标/Token 分页)', () {
-    test('KPage.first 初始化', () {
+  group('KPage (Cursor/Key based pagination)', () {
+    test('KPage.first initialization', () {
+      // 验证 KPage.first 游标/Key 分页器初始化
       final kpage = KPage<String, String>.first(
         data: ['user1', 'user2'],
         hasNext: true,
@@ -137,6 +147,7 @@ void main() {
     });
 
     test('KPage.generateNextPage', () {
+      // 验证 KPage.generateNextPage 更新游标和数据
       final firstPage = KPage<String, String>.first(
         data: ['a', 'b'],
         hasNext: true,
@@ -155,7 +166,8 @@ void main() {
       expect(secondPage.nextPageKey, equals('token_page_3'));
     });
 
-    test('复杂对象作为 Key 的 KPage', () {
+    test('KPage with Record as custom Key', () {
+      // 验证使用 Record 复杂对象作为自定义 Key 的 KPage
       final kpage = KPage<int, ({int timestamp, String id})>.first(
         data: [100, 200],
         hasNext: true,
